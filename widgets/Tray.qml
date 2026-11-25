@@ -1,21 +1,26 @@
 // System tray widget — shows StatusNotifierItem icons (SNI / D-Bus system tray).
 // Mirrors caelestia's Tray.qml pattern: Repeater over SystemTray.items,
-// one TrayItem delegate per tray entry.
+// one TrayItem delegate per tray entry. The Tray itself is the pill background;
+// items are spaced inside it.
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.SystemTray
 
-Item {
+Rectangle {
     id: tray
 
-    implicitWidth: row.implicitWidth
-    implicitHeight: 30
+    color: Qt.rgba(0.196, 0.196, 0.196, 0.2)
+    radius: 100
+    implicitHeight: 24
 
     Row {
         id: row
 
-        spacing: 5
+        anchors.centerIn: parent
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        spacing: 3
 
         Repeater {
             model: SystemTray.items.values
@@ -23,4 +28,10 @@ Item {
             delegate: TrayItem { }
         }
     }
+
+    implicitWidth: SystemTray.items.values.length > 0
+        ? row.implicitWidth + 8
+        : 0
+
+    visible: SystemTray.items.values.length > 0
 }
