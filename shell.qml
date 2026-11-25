@@ -1,5 +1,5 @@
 // Root config for the quickshell bar.
-// Run with: quickshell --path /home/duhnny/projects/personal/development/local/replace-waybar
+// Run with: quickshell --path $(pwd)
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QSG_RENDER_LOOP=threaded
 
