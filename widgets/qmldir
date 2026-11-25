@@ -6,3 +6,5 @@ Brightness Brightness.qml
 Network Network.qml
 Battery Battery.qml
 Clock Clock.qml
+Tray Tray.qml
+TrayItem TrayItem.qml

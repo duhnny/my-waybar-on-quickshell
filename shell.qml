@@ -62,6 +62,7 @@ ShellRoot {
                 Brightness {}
                 Network {}
                 Battery {}
+                Tray {}
                 Clock {}
             }
         }
