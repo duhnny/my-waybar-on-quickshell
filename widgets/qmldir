@@ -1,0 +1,8 @@
+LauncherButton LauncherButton.qml
+Workspaces Workspaces.qml
+Spotify Spotify.qml
+Volume Volume.qml
+Brightness Brightness.qml
+Network Network.qml
+Battery Battery.qml
+Clock Clock.qml
