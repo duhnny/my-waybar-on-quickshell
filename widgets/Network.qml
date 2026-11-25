@@ -58,14 +58,6 @@ Item {
             spacing: 6
 
             Text {
-                text: network.icon()
-                font.family: "JetBrainsMono Nerd Font Propo"
-                font.pixelSize: 13
-                font.weight: 600
-                color: connected ? "#ffffff" : "#ff6b6b"
-            }
-
-            Text {
                 text: network.ssid
                 font.family: "DM Sans"
                 font.pixelSize: 13
@@ -73,6 +65,14 @@ Item {
                 color: connected ? "#ffffff" : "#ff6b6b"
                 width: Math.min(implicitWidth, 150)
                 elide: Text.ElideRight
+            }
+
+            Text {
+                text: network.icon()
+                font.family: "JetBrainsMono Nerd Font Propo"
+                font.pixelSize: 13
+                font.weight: 600
+                color: connected ? "#ffffff" : "#ff6b6b"
             }
         }
     }
