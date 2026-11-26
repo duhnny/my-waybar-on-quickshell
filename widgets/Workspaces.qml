@@ -3,6 +3,8 @@
 // with class-based icon rewrite rules (same mapping as the old config).
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
+import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
@@ -87,6 +89,16 @@ Item {
                                 source: Quickshell.iconPath(wsItemDelegate.modelData.lastIpcObject.class)
 
                                 anchors.verticalCenter: parent.verticalCenter
+
+                                layer.enabled: wsDelegate.active || wsDelegate.hovered
+                                layer.effect: DropShadow {
+                                    horizontalOffset: 0
+                                    verticalOffset: 0
+                                    radius: 5.0       // Thickness of the contour
+                                    samples: 9        // Must be roughly (radius * 2) + 1
+                                    spread: 0.45      // High spread makes it a solid outline instead of a soft shadow
+                                    color: Qt.rgba(0, 0, 0, 0.45)
+                                }
                             }
                         }
                     }
@@ -104,7 +116,7 @@ Item {
 
                     anchors.fill: parent
                     radius: 100
-                    color: wsDelegate.active || wsDelegate.hovered ? "#e8eaed" : Qt.rgba(0.196, 0.196, 0.196, 0.2)
+                    color: wsDelegate.active || wsDelegate.hovered ? Qt.rgba(0.91, 0.92, 0.93, 1.0) : Qt.rgba(0.196, 0.196, 0.196, 0.2)
                     z: -1
 
                     Behavior on color {
