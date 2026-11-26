@@ -5,6 +5,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Widgets
 
 Item {
     id: workspaces
@@ -12,78 +13,10 @@ Item {
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
 
-    // Class → nerd-font icon mapping, ported from waybar's window-rewrite rules.
-    function iconFor(toplevel) {
-        if (!toplevel)
-            return ""
-
-        const cls = (toplevel.lastIpcObject && toplevel.lastIpcObject.class) || ""
-        const title = (toplevel.title || "")
-
-        // Ordered rewrite rules (class first, then class+title, then title-only).
-        const rules = [
-            [/title<.*youtube.*>/i, ""],
-            [/class<.*zen.*> title<.*github.*>/i, ""],
-            [/class<.*zen.*> title<.*WhatsApp.*>/i, ""],
-            [/class<zen>/i, "󰺕"],
-            [/class<.*ghostty.*>/i, ""],
-            [/class<.*kitty.*>/i, ""],
-            [/class<.*nvim.*>/i, ""],
-            [/class<.*[dD]ocker.*>/i, ""],
-            [/class<.*bitwarden.*>/i, ""],
-            [/class<Spotify>/i, ""],
-            [/class<.*nautilus.*>/i, ""],
-            [/class<.*systemmonitor.*>/i, ""],
-            [/class<.*resolve.*>/i, ""],
-            [/class<.*freeshow.*>/i, "󰐩"],
-            [/class<.*Cursor.*>/i, "󰆦"],
-            [/class<.*podman.*>/i, ""],
-            [/class<.*Postman.*>/i, "󰙨"],
-            [/class<.*chrome.*>/i, ""],
-            [/class<.*obsidian.*>/i, ""],
-            [/class<.*gimp.*>/i, ""],
-            [/class<.*obs.*studio.*>/i, "󰡂"],
-            [/class<.*code-oss.*>/i, ""],
-            [/class<.*zathura.*>/i, ""],
-            [/class<.*beekeeper.*>/i, ""],
-            [/class<.*anydesk.*>/i, "󰔀"],
-            [/class<.*thunderbird.*>/i, ""],
-            [/class<.*systemsettings.*>/i, ""],
-            [/class<.*merkuro.*calendar.*>/i, "󰃭"],
-            [/class<.*ONLYOFFICE.*>/i, "󰏆"],
-            [/class<.*t3code.*>/i, ""],
-            [/class<.*pulseaudio.*pavucontrol.*>/i, "󰜟"],
-            [/class<.*audacity.*>/i, ""],
-            [/title<.*youtube.*>/i, ""],
-            [/title<.*whatsapp.*>/i, ""],
-        ]
-
-        for (const rule of rules) {
-            const pattern = rule[0]
-            const icon = rule[1]
-
-            // Match against class and/or title depending on the pattern.
-            if (pattern.test("class<" + cls + "> title<" + title + ">"))
-                return icon
-        }
-
-        return ""
-    }
-
-    function workspaceIcon(ws) {
-        const windows = ws.toplevels.values
-        if (windows.length === 0)
-            return ""
-
-        // One icon per window (no deduplication).
-        const icons = []
-        for (let i = 0; i < windows.length; i++)
-            icons.push(iconFor(windows[i]))
-        return icons.join(" ")
-    }
-
     Row {
         id: row
+
+        spacing: 2
 
         Repeater {
             model: Hyprland.workspaces
@@ -117,13 +50,14 @@ Item {
                 Row {
                     id: wsRow
 
-                    property real horizontalPadding: wsDelegate.hovered ? 10 : (wsDelegate.active ? 15 : 5)
+                    property real horizontalPadding: wsDelegate.hovered ? 10 : (wsDelegate.active ? 12 : 5)
 
                     spacing: 5
                     leftPadding: horizontalPadding
                     rightPadding: horizontalPadding
-                    topPadding: 4
-                    bottomPadding: 4
+                    topPadding: 2
+                    bottomPadding: 2
+                    anchors.verticalCenter: parent.verticalCenter
 
                     Text {
                         text: modelData.id + '.'
@@ -131,14 +65,30 @@ Item {
                         font.pixelSize: 13
                         font.weight: 600
                         color: wsDelegate.active || wsDelegate.hovered ? "#121212" : "#ffffff"
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    Text {
-                        text: workspaceIcon(modelData)
-                        font.family: "JetBrainsMono Nerd Font Propo"
-                        font.pixelSize: 13
-                        font.weight: 600
-                        color: wsDelegate.active || wsDelegate.hovered ? "#121212" : "#ffffff"
+                    Repeater {
+                        visible: wsDelegate.modelData.toplevels ? true : false
+                        model: wsDelegate.modelData.toplevels?.values
+
+                        delegate: Item {
+                            id: wsItemDelegate
+
+                            required property var modelData
+
+                            implicitWidth: 20
+                            implicitHeight: 20
+
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            IconImage {
+                                implicitSize: 16
+                                source: Quickshell.iconPath(wsItemDelegate.modelData.lastIpcObject.class)
+
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
                     }
 
                     Behavior on leftPadding {
