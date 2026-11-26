@@ -91,13 +91,8 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 layer.enabled: wsDelegate.active || wsDelegate.hovered
-                                layer.effect: DropShadow {
-                                    horizontalOffset: 0
-                                    verticalOffset: 0
-                                    radius: 5.0       // Thickness of the contour
-                                    samples: 9        // Must be roughly (radius * 2) + 1
-                                    spread: 0.45      // High spread makes it a solid outline instead of a soft shadow
-                                    color: Qt.rgba(0, 0, 0, 0.3)
+                                layer.effect: MultiEffect {
+                                    brightness: -0.2
                                 }
                             }
                         }
