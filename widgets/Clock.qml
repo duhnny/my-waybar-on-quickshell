@@ -52,14 +52,15 @@ Item {
     }
 
     MouseArea {
-        anchors.fill: parent
+        id: clockMouseArea
+
+        anchors.fill: pill
         hoverEnabled: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
+        enabled: true
 
         onClicked: (mouse) => {
-            if (mouse.button === Qt.RightButton)
-                clock.showDate = !clock.showDate
+            clock.showDate = !clock.showDate
         }
     }
 }
