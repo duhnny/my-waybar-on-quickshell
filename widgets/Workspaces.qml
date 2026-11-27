@@ -15,6 +15,45 @@ Item {
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
 
+    // Generation counter that increments whenever toplevel data changes.
+    // Accessing this inside the icon binding forces QML to re-evaluate
+    // and pick up the updated lastIpcObject.class.
+    property int refreshGeneration: 0
+
+    // Event-driven refresh: whenever Hyprland's toplevel list changes
+    // (window opened/closed), refresh toplevel data from j/clients.
+    // We delay the generation bump slightly so Hyprland's IPC response
+    // (j/clients) has time to arrive before QML re-reads lastIpcObject.class.
+    Timer {
+        id: refreshDelayTimer
+        interval: 500
+        repeat: false
+        onTriggered: {
+            Hyprland.refreshToplevels()
+            workspaces.refreshGeneration++
+        }
+    }
+
+    Connections {
+        target: Hyprland.toplevels
+        function onValuesChanged() {
+            refreshDelayTimer.restart()
+        }
+    }
+
+    // Fallback poll every 30 seconds in case a class change doesn't
+    // trigger onValuesChanged (e.g. a window's class changes in place).
+    Timer {
+        interval: 30000
+        running: true
+        repeat: true
+        onTriggered: {
+            Hyprland.refreshWorkspaces()
+            Hyprland.refreshToplevels()
+            workspaces.refreshGeneration++
+        }
+    }
+
     Row {
         id: row
 
@@ -86,7 +125,12 @@ Item {
 
                             IconImage {
                                 implicitSize: 16
-                                source: Quickshell.iconPath(wsItemDelegate.modelData.lastIpcObject.class)
+                                source: {
+                                    // Access refreshGeneration so QML re-evaluates
+                                    // this binding whenever toplevel data changes.
+                                    const gen = workspaces.refreshGeneration
+                                    return Quickshell.iconPath(wsItemDelegate.modelData.lastIpcObject.class)
+                                }
 
                                 anchors.verticalCenter: parent.verticalCenter
 
