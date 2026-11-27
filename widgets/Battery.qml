@@ -82,6 +82,12 @@ Item {
             running: battery.warning || battery.critical
             loops: Animation.Infinite
 
+            // Reset pill color to normal when blinking stops (e.g. charger plugged in).
+            onRunningChanged: {
+                if (!running)
+                    pill.color = Qt.rgba(0.196, 0.196, 0.196, 0.2)
+            }
+
             ColorAnimation {
                 target: pill
                 property: "color"
